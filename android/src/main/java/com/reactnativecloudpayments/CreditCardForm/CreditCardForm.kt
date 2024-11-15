@@ -54,12 +54,8 @@ class CreditCardForm(reactContext: ReactApplicationContext): ReactContextBaseJav
   }
 
   @ReactMethod
-  fun initialPaymentData(initialData: ReadableMap, jsonData: String?) {
-    this.paymentDataInitialValues = InitialPaymentData(initialData);
-
-    if (!jsonData.isNullOrEmpty()) {
-      this.paymentDataInitialValues.setJsonData(jsonData);
-    }
+  fun initialPaymentData(initialData: ReadableMap, jsonData: String? = null) {
+    this.paymentDataInitialValues = InitialPaymentData(initialData, jsonData);
   }
 
   @ReactMethod
@@ -85,26 +81,24 @@ class CreditCardForm(reactContext: ReactApplicationContext): ReactContextBaseJav
     val yandexPayMerchantID = paymentDataInitialValues.yandexPayMerchantID ?: "";
 
     val paymentData = PaymentData(
-      paymentDataInitialValues.publicId,
       paymentDataInitialValues.totalAmount,
       currency = paymentDataInitialValues.currency,
       invoiceId = paymentDataInitialValues.invoiceId,
       accountId = paymentDataInitialValues.accountId,
-      ipAddress = paymentDataInitialValues.ipAddress ?: "",
       description = paymentDataInitialValues.description,
-      cardholderName = paymentDataInitialValues.cardHolderName ?: "",
-      jsonData = paymentDataInitialValues.jsonDataHash,
-      cultureName = paymentDataInitialValues.cultureName,
+      jsonData = paymentDataInitialValues.jsonDataString,
       payer = paymentDataInitialValues.payer
     )
 
     val configuration = PaymentConfiguration(
-      paymentData,
-      CardIOScanner(),
-      useDualMessagePayment,
-      disableGPay,
-      disableYandexPay,
-      yandexPayMerchantID
+      publicId = paymentDataInitialValues.publicId,
+      paymentData = paymentData,
+      scanner = CardIOScanner(),
+      requireEmail = false, // todo: check where it could be taken from
+      useDualMessagePayment = useDualMessagePayment,
+      disableGPay = disableGPay,
+      disableYandexPay = disableYandexPay,
+      yandexPayMerchantID = yandexPayMerchantID
     )
 
     val appCompatActivity = currentActivity as AppCompatActivity;

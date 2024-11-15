@@ -28,7 +28,7 @@ class CloudPaymentsApi(reactContext: ReactApplicationContext): ReactContextBaseJ
 
   @ReactMethod
   fun initApi(infoData: ReadableMap, jsonData: String?) {
-    paymentData = InitialPaymentData(infoData);
+    paymentData = InitialPaymentData(infoData, jsonData);
     api = CloudpaymentsSDK.createApi(paymentData.publicId)
 
     this.jsonData = jsonData;
